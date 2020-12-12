@@ -1,5 +1,7 @@
 package mxplayer.in;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +13,9 @@ public class TreeNode {
     double pr;
     double Q = 0;
 
-    public TreeNode(double pr) {
+    public TreeNode(TreeNode parent, double pr) {
         this.pr = pr;
+        this.parent = parent;
     }
 
     private double getValue() {
@@ -30,17 +33,16 @@ public class TreeNode {
         return child.size() == 0;
     }
 
-    public Coord select() {
+    public Map.Entry<Coord, TreeNode> select() {
         return child.entrySet().stream()
             .max(Comparator.comparingDouble(x -> x.getValue().getValue()))
-            .get()
-            .getKey();
+            .get();
     }
 
     public void expand(Map<Coord, Double> actionProbs) {
         actionProbs.forEach((coord, pr) -> {
             if (!child.keySet().contains(coord)) {
-                child.put(coord, new TreeNode(pr));
+                child.put(coord, new TreeNode(this, pr));
             }
         });
     }

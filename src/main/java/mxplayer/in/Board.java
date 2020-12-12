@@ -2,13 +2,14 @@ package mxplayer.in;
 
 import mxplayer.in.player.Human;
 import mxplayer.in.player.Player;
+import mxplayer.in.player.Robot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class Board {
+public class Board implements Serializable{
+    private static final long serialVersionUID = -6137892776929979116L;
     private int INTERVAL_WIDTH = 2;
     public int WIDTH = 8;
     public int LENGTH = 8;
@@ -18,8 +19,8 @@ public class Board {
     private Coord lastLoc;
     private Player lastPlayer;
     private Player[] players = new Player[] {
-        Human.create(1),
-        Human.create(2)
+        Robot.create(2),
+        Human.create(1)
     };
 
     private List<Coord> availables;
@@ -91,12 +92,15 @@ public class Board {
         Player curPlayer = getCurPlayer();
         arr[x][y] = curPlayer.getId();
         lastLoc = new Coord(x, y);
+        availables.remove(lastLoc);
         lastPlayer = curPlayer;
         step++;
     }
 
     @SuppressWarnings("Duplicates")
     public int gameEnd() { // 0:没有结束 1:平局 2.胜利
+        if (lastLoc == null)
+            return 0;
         int x = lastLoc.getX();
         int y = lastLoc.getY();
         int y1 = y-4;

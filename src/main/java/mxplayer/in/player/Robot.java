@@ -4,8 +4,10 @@ import mxplayer.in.Board;
 import mxplayer.in.Coord;
 import mxplayer.in.MCTS;
 
-public class Robot extends Player {
-    private MCTS mcts = new MCTS();
+import java.io.Serializable;
+
+public class Robot extends Player implements Serializable {
+    private transient MCTS mcts = new MCTS();
     private int id;
     private Robot() {}
 
@@ -21,7 +23,9 @@ public class Robot extends Player {
     }
 
     @Override
-    public Coord getAction(Board board, String name) {
-        return null;
+    public Coord getAction(Board board) {
+        Coord move = mcts.getMove(board);
+        mcts.reset();
+        return move;
     }
 }

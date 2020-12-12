@@ -17,7 +17,7 @@ public abstract class Player {
     }};
 
     public abstract int getId();
-    public abstract Coord getAction(Board board, String name);
+    public abstract Coord getAction(Board board);
 
     public String getName() {
         return nameMap.get(getId());

@@ -1,13 +1,14 @@
 package mxplayer.in;
 
 import mxplayer.in.player.Player;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.*;
 
 public class MCTS {
     Random rand = new Random();
-    TreeNode root = new TreeNode(1.0);
-    int playoutNum = 10000;
+    TreeNode root = new TreeNode(null, 1.0);
+    int playoutNum = 20000;
 
     private Map<Coord, Double> policyValueFn(Board board) {
         List<Coord> list = board.getAvailables();
@@ -19,20 +20,22 @@ public class MCTS {
         return map;
     }
 
-    private Map<Coord, Double> rolloutPolicyFn(Board board) {
-        // to do;
-        return null;
+    private Coord rolloutPolicyFn(Board board) {
+        List<Coord> list = board.getAvailables();
+        int index = rand.nextInt(list.size());
+        return list.get(index);
     }
 
     private double evaluateRollout(Board state) {
         Player player = state.getCurPlayer();
         int v = 0;
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < playoutNum; ++i) {
             v = state.gameEnd();
             if (v != 0) {
                 break;
             }
-            Map<Coord, Double> actionProbs = policyValueFn(state);
+            Coord move = rolloutPolicyFn(state);
+            state.doMove(move);
         }
         if (v == 1) {
             return 0;
@@ -47,8 +50,9 @@ public class MCTS {
             if (node.isleaf()) {
                 break;
             }
-            Coord coord = node.select();
-            state.doMove(coord);
+            Map.Entry<Coord, TreeNode> entry = node.select();
+            node = entry.getValue();
+            state.doMove(entry.getKey());
         }
         Map<Coord, Double> actionProbs = policyValueFn(state);
         int status = state.gameEnd();
@@ -61,12 +65,17 @@ public class MCTS {
 
     public Coord getMove(Board state) {
         for (int i = 0; i < playoutNum; ++i) {
-            playout(state);
+            Board stateClone = SerializationUtils.clone(state);
+            playout(stateClone);
         }
         return root.child.entrySet()
             .stream()
             .max(Comparator.comparing(x -> x.getValue().visitNum))
             .get()
             .getKey();
+    }
+
+    public void reset() {
+        root = new TreeNode(null, 1.0);
     }
 }

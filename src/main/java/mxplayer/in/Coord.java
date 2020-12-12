@@ -1,6 +1,9 @@
 package mxplayer.in;
 
-public class Coord {
+import java.io.Serializable;
+
+public class Coord implements Serializable{
+    private static final long serialVersionUID = 4031952613388369811L;
     private int x, y;
 
     public Coord(int x, int y) {

@@ -10,7 +10,7 @@ public class Game {
         Player curPlayer;
         while (true) {
             curPlayer = board.getCurPlayer();
-            Coord move = curPlayer.getAction(board, curPlayer.getName());
+            Coord move = curPlayer.getAction(board);
             board.doMove(move);
             board.graphic();
             int res = board.gameEnd();
