@@ -47,7 +47,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>mxplayer.in.search.Main</mainClass>
+              <mainClass>mxplayer.in.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

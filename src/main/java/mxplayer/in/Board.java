@@ -11,16 +11,16 @@ import java.util.List;
 public class Board implements Serializable{
     private static final long serialVersionUID = -6137892776929979116L;
     private int INTERVAL_WIDTH = 2;
-    public int WIDTH = 8;
-    public int LENGTH = 8;
+    public int WIDTH = 12;
+    public int LENGTH = 12;
     private int bias = 0;
     private int step = 0;
     private int[][] arr = new int[LENGTH][];
-    private Coord lastLoc;
+    public Coord lastLoc;
     private Player lastPlayer;
     private Player[] players = new Player[] {
-        Robot.create(2),
-        Human.create(1)
+        Human.create(2),
+        Robot.create(1)
     };
 
     private List<Coord> availables;
@@ -64,13 +64,13 @@ public class Board implements Serializable{
         }
         String suffix = sb.toString();
         System.out.print(suffix + " ");
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < WIDTH; ++i) {
             System.out.printf("%s%s", i, suffix);
         }
         System.out.println();
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < LENGTH; ++i) {
             System.out.printf("%s%s", i, suffix);
-            for (int j = 0; j < 8; ++j) {
+            for (int j = 0; j < WIDTH; ++j) {
                 int x = arr[i][j];
                 if (x == 1) {
                     System.out.print(Player.abbMap.get(1) + suffix);
@@ -84,6 +84,31 @@ public class Board implements Serializable{
                 System.out.println();
             }
         }
+    }
+
+    public int getPlaceScore(Coord coord) {
+        int x = coord.getX();
+        int y = coord.getY();
+        int[] next = new int[]{-1, 0, 1};
+        boolean flag =false;
+        for (int i : next) {
+            for (int j : next) {
+                if (i == 0 && j == 0) {
+                    continue;
+                }
+                int v = getLoc(x+i, y+j);
+                if (v != -1 && v != 0) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (flag) {
+                break;
+            }
+        }
+        if (flag)
+            return 4;
+        return 1;
     }
 
     public void doMove(Coord coord) {
@@ -119,6 +144,7 @@ public class Board implements Serializable{
 
         int x1 = x-4;
         int x2 = x+4;
+        v = 0;
         for (int tx = x1; tx <= x2; ++tx) {
             if (getLoc(tx, y) == lastPlayer.getId()) {
                 v+=1;
@@ -134,6 +160,7 @@ public class Board implements Serializable{
         y1 = y-4;
         x2 = x+4;
         y2 = y+4;
+        v = 0;
         int tx = x1, ty = y1;
         for (; tx<=x2 && ty<=y2; ) {
             if (getLoc(tx, ty) == lastPlayer.getId()) {
@@ -154,6 +181,7 @@ public class Board implements Serializable{
         y2 = y+4;
         tx = x1;
         ty = y1;
+        v = 0;
         for (; tx>=x2 && ty <= y2; ) {
             if (getLoc(tx, ty) == lastPlayer.getId()) {
                 v+=1;

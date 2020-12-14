@@ -8,12 +8,12 @@ import java.util.Map;
 
 public abstract class Player {
     public static Map<Integer, String> nameMap = new HashMap<Integer, String>() {{
-        put(1, "white");
-        put(2, "black");
+        put(1, "robot");
+        put(2, "YOU");
     }};
     public static Map<Integer, String> abbMap = new HashMap<Integer, String>() {{
-        put(1, "W");
-        put(2, "B");
+        put(1, "R");
+        put(2, "Y");
     }};
 
     public abstract int getId();
